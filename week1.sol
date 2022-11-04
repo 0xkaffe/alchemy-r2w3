@@ -13,16 +13,17 @@ contract DrBrown is ERC721, ERC721Enumerable, ERC721URIStorage {
     Counters.Counter private _tokenIdCounter;
     // ==================================================================================
     uint256 MAX_SUPPLY = 100000;
-    uint256 MAX_WALLET_LIMIT = 5;
+    uint256 MAX_WALLET_LIMIT = 2;
     
-    mapping(address => uint) walletMints;
+    mapping(address => uint) public mintLimits;
     // ==================================================================================
     constructor() ERC721("Dr. Brown", "BRWN") {}
     
     function safeMint(address to, string memory uri) public {
         // ==================================================================================
         require(_tokenIdCounter.current() <= MAX_SUPPLY, "I'm sorry we reached the cap");
-        require(walletMints[msg.sender] <= MAX_WALLET_LIMIT, "You can't mint more than 5 NFTs");
+        require(mintLimits[msg.sender] < MAX_WALLET_LIMIT, "You can't mint more than 2 NFTs");
+        mintLimits[msg.sender]++;
         // ==================================================================================
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
